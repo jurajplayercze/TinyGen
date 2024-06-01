@@ -5,14 +5,14 @@ import keyboard
 import threading
 import datetime
 
-shortcut = "F2"
+shortcut = "ctrl+shift+t"
 
 # Funkce pro převod normálního textu na tiny 
 def to_tiny_text(text):
     tiny_text_map = str.maketrans(
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ",
         "ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢABCDEFGHIJKLMNOPQRSTUVWXYZáčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ"
-    )
+    )   
     return text.translate(tiny_text_map)
 
 # Funkce pro zavření okna a vypnutí programu
