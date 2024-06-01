@@ -5,9 +5,9 @@ import keyboard
 import threading
 import datetime
 
-shortcut = "ctrl+y"
+shortcut = "F2"
 
-# Funkce pro převod normálního textu na tiny text
+# Funkce pro převod normálního textu na tiny 
 def to_tiny_text(text):
     tiny_text_map = str.maketrans(
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ",
@@ -41,18 +41,41 @@ def on_shortcut():
     console_text.insert(tk.END, f"{local_time}: {tiny_text}\n")
     console_text.see(tk.END)  # Posunutí textového widgetu na konec pro zobrazení posledního textu
 
+# Funkce pro aktualizaci klávesové zkratky
+def update_shortcut():
+    global shortcut
+    new_shortcut = shortcut_entry.get()
+    if new_shortcut:
+        try:
+            keyboard.remove_hotkey(shortcut)
+        except KeyError:
+            pass  # Pokud klávesová zkratka nebyla ještě nastavena
+        shortcut = new_shortcut
+        keyboard.add_hotkey(shortcut, on_shortcut)
+        console_text.insert(tk.END, f"{datetime.datetime.now().strftime("%H:%M:%S")}: Aktualizace klávesové zkratky {new_shortcut}\n")
+        console_text.see(tk.END)  # Posunutí textového widgetu na konec pro zobrazení posledního textu
+        shortcut_label.config(text=f"Použijte klávesovou zkratku {shortcut} pro konverzi textu na tiny text")
+
 # Vytvoření hlavního okna
 root = tk.Tk()
 root.title("Tiny Text Converter")
-root.geometry("400x300")
+root.geometry("400x400")
 root.configure(bg="#6A6A6A")
 
 # Vytvoření a umístění popisku s instrukcí pro klávesovou zkratku
-shortcut_label = tk.Label(root, text="Použijte klávesovou zkratku" + shortcut + " pro konverzi textu na tiny text")
+shortcut_label = tk.Label(root, text="Použijte klávesovou zkratku " + shortcut + " pro konverzi textu na tiny text", fg="white", bg="#6A6A6A")
 shortcut_label.pack(pady=10)
 
+# Vytvoření vstupního pole pro zadání vlastní klávesové zkratky
+shortcut_entry = tk.Entry(root)
+shortcut_entry.pack(pady=10)
+
+# Tlačítko pro potvrzení nové klávesové zkratky
+set_shortcut_button = tk.Button(root, text="Potvrdit novou klávesovou zkratku", command=update_shortcut)
+set_shortcut_button.pack(pady=10)
+
 # Vytvoření textového widgetu (konzole) pro zobrazení převedených textů
-console_text = tk.Text(root, wrap=tk.WORD, height=10)
+console_text = tk.Text(root, wrap=tk.WORD, height=10, fg="white", bg="#1e1e1e", insertbackground="white")
 console_text.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
 
 # Listeners
