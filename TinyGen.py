@@ -5,7 +5,10 @@ import keyboard
 import threading
 import datetime
 
+
+root = tk.Tk()
 shortcut = "ctrl+shift+t"
+convert_to_lowercase = tk.BooleanVar(value=False)  # Proměnná pro zaškrtávací políčko
 
 # Funkce pro převod normálního textu na tiny 
 def to_tiny_text(text):
@@ -27,6 +30,11 @@ def on_shortcut():
     keyboard.send("ctrl+c")
     time.sleep(0.1)  # Pauza pro zajištění, že text je vložen do schránky
     selected_text = pyperclip.paste()
+
+    # Pokud je zaškrtávací políčko aktivní, převést text na malá písmena
+    if convert_to_lowercase.get():
+        selected_text = selected_text.lower()
+    
     tiny_text = to_tiny_text(selected_text)
     time.sleep(0.1)
     pyperclip.copy(tiny_text)
@@ -52,12 +60,11 @@ def update_shortcut():
             pass  # Pokud klávesová zkratka nebyla ještě nastavena
         shortcut = new_shortcut
         keyboard.add_hotkey(shortcut, on_shortcut)
-        console_text.insert(tk.END, f"{datetime.datetime.now().strftime("%H:%M:%S")}: Aktualizace klávesové zkratky {new_shortcut}\n")
+        console_text.insert(tk.END, f"{datetime.datetime.now().strftime('%H:%M:%S')}: Aktualizace klávesové zkratky {new_shortcut}\n")
         console_text.see(tk.END)  # Posunutí textového widgetu na konec pro zobrazení posledního textu
         shortcut_label.config(text=f"Použijte klávesovou zkratku {shortcut} pro konverzi textu na tiny text")
 
 # Vytvoření hlavního okna
-root = tk.Tk()
 root.title("Tiny Text Converter")
 root.geometry("400x400")
 root.configure(bg="#6A6A6A")
@@ -73,6 +80,10 @@ shortcut_entry.pack(pady=10)
 # Tlačítko pro potvrzení nové klávesové zkratky
 set_shortcut_button = tk.Button(root, text="Potvrdit novou klávesovou zkratku", command=update_shortcut)
 set_shortcut_button.pack(pady=10)
+
+# Zaškrtávací políčko pro převod na malá písmena
+lowercase_checkbox = tk.Checkbutton(root, text="Převést na malá písmena", variable=convert_to_lowercase, fg="white", bg="#6A6A6A", selectcolor="#6A6A6A")
+lowercase_checkbox.pack(pady=5)
 
 # Vytvoření textového widgetu (konzole) pro zobrazení převedených textů
 console_text = tk.Text(root, wrap=tk.WORD, height=10, fg="white", bg="#1e1e1e", insertbackground="white")
